@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+
+    >
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:stretchColumns="*"
+
+        android:layout_marginBottom="5dp"
+        >
+
+        <TableRow
+            android:background="@color/Recsee"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:height="50dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.25"
+                android:text="PERIOD"
+
+                android:textSize="15dp"
+
+                android:textColor="@android:color/black"
+                android:background="@drawable/back"
+
+                />
+            <TextView
+                android:id = "@+id/start_time"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="2018/07/23"
+                android:layout_weight="0.40"
+                android:textStyle="bold"
+                android:paddingLeft="5dp"
+
+                android:height="45dp"
+
+                android:textSize="15dp"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:background="@drawable/back"
+
+                />
+            <TextView
+
+                android:id = "@+id/end_time"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="2018/08/30"
+                android:layout_weight="0.40"
+
+
+                android:gravity="center"
+                android:textStyle="bold"
+                android:height="45dp"
+                android:textSize="15dp"
+                android:textColor="@android:color/black"
+                android:background="@drawable/back"
+
+                />
+
+
+
+        </TableRow>
+
+
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:height="50dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.45"
+                android:text="CALL START"
+
+                android:textSize="15dp"
+
+                android:textColor="@android:color/black"
+                android:background="@drawable/back"
+
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="NUMBER"
+                android:layout_weight="0.45"
+                android:textStyle="bold"
+                android:paddingLeft="5dp"
+
+                android:height="45dp"
+
+                android:textSize="15dp"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:background="@drawable/back"
+
+                />
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="INFO"
+                android:layout_weight="0.35"
+
+
+                android:gravity="center"
+                android:textStyle="bold"
+                android:height="45dp"
+                android:textSize="15dp"
+                android:textColor="@android:color/black"
+                android:background="@drawable/back"
+
+                />
+
+
+
+        </TableRow>
+
+
+    </TableLayout>
+
+
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/hong"
+        android:choiceMode="multipleChoice"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+
+        />
+
+
+
+
+
+
+
+</LinearLayout>

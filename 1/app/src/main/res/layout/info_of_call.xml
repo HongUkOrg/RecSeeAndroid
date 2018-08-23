@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <EditText
+        android:id="@+id/contents_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="63dp"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="phone"
+        android:text="TEL"
+        android:textColor="#ffaa11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title_edit"
+        android:layout_width="104dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="63dp"
+        android:editable="true"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:text="NAME"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="89dp"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:text="Missed Call Reason"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contents_edit" />
+
+    <TextView
+        android:id="@+id/miss_call_reason"
+        android:layout_width="320dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="29dp"
+        android:background="@drawable/back"
+
+        android:fontFamily="casual"
+        android:text="없음"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        tools:autoText="false" />
+
+    <Button
+        android:id="@+id/call_to_customer"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="17dp"
+        android:text="통화 걸기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contents_edit" />
+
+    <Button
+        android:id="@+id/play_recorded_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
+        android:layout_marginStart="27dp"
+        android:text="Play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/one_upload_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
+        android:layout_marginStart="120dp"
+        android:text="Upload To Server"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

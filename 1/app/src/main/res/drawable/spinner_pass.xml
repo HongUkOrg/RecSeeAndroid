@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item><layer-list>
+
+        <item>
+            <shape>
+            <gradient android:angle="90" android:endColor="@android:color/white" android:startColor="@android:color/white" android:type="linear" />
+
+            <stroke android:width="2dp" android:color="#aaa" />
+
+            <corners android:radius="6dp" />
+
+            <padding android:bottom="3dp" android:left="3dp" android:right="3dp" android:top="3dp" />
+
+        </shape>
+        </item>
+        <item
+            android:gravity="left"
+            android:width="25dp"
+            android:left="7dp"
+            android:top="9dp"
+            android:bottom="9dp"
+            ><bitmap
+            android:src="@drawable/icon_label_key" />
+        </item>
+
+
+    </layer-list></item>
+</selector>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        >
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_light"
+
+           />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text = "data transmit to server"
+            android:textColor="@android:color/holo_blue_light"/>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@android:color/white">
+
+            <TableLayout
+                android:id="@+id/page01"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID :"
+                        android:textColor="@android:color/black" />
+
+                    <EditText
+                        android:id="@+id/edit_Id"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:autoText="true"
+                        android:text="hello"
+                        android:textColor="@android:color/black" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PWord : "
+                        android:textColor="@android:color/black" />
+
+                    <EditText
+                        android:id="@+id/edit_pword"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:password="true"
+                        android:text="helloo"
+                        android:textColor="@android:color/black" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="개념 : "
+                        android:textColor="@android:color/black" />
+
+                    <EditText
+                        android:id="@+id/edit_title"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="hello"
+                        android:textColor="@android:color/black" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="대책 : "
+                        android:textColor="@android:color/black" />
+
+                    <EditText
+                        android:id="@+id/edit_subject"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:lines="4"
+                        android:textColor="@android:color/black" />
+                </TableRow>
+
+                <View
+                    android:layout_height="2dip"
+                    android:background="#AAAAAA" />
+
+                <TableRow>
+
+                    <Button
+                        android:id="@+id/button_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="   전    송    " />
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/page02"
+                android:outlineAmbientShadowColor="@android:color/black"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/text_result"
+
+                    android:textColor="@android:color/black"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</TabHost>
+

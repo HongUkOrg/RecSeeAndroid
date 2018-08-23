@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:weightSum="1"
+        >
+    <EditText
+        android:id="@+id/spinner_user"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:layout_marginLeft="5dp"
+        android:textColor="@android:color/black"
+
+        android:paddingLeft="50dp"
+        android:maxLength="20"
+        android:text="상담원"
+        android:textStyle="bold"
+        android:background="@drawable/spinner_user" />
+        <EditText
+            android:id="@+id/spinner_use"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:textColor="@android:color/black"
+            android:paddingLeft="50dp"
+            android:maxLength="20"
+            android:layout_marginLeft="5dp"
+            android:text="상담원"
+            android:textStyle="bold"
+            android:background="@drawable/spinner_user" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:layout_marginLeft="10dp"
+            android:text="조회"
+            android:textColor="@android:color/white"
+            android:background="@drawable/login_button"
+            />
+    </LinearLayout>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:stretchColumns="*">
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:height="45dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="고객정보"
+                android:textSize="15dp"
+                android:textColor="@android:color/black"
+                android:background="@drawable/grid_header_border"
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="통화 일"
+                android:textStyle="bold"
+                android:height="45dp"
+                android:textSize="15dp"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:background="@drawable/grid_header_border"
+
+                />
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="통화시간"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:height="45dp"
+                android:textSize="15dp"
+                android:textColor="@android:color/black"
+                android:background="@drawable/grid_header_border"
+
+                />
+
+
+
+        </TableRow>
+
+
+    </TableLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="*">
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

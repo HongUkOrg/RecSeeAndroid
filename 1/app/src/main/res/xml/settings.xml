@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns:android="http://schemas.android.com/apk/res/android">
+  <!--Normal Setting-->
+  <header
+      name="Normal Setting"/>
+  <item
+      android:id="@+id/id"
+      name="ID"
+      secondaryTxt="phwysl"/>
+  <item
+      android:id="@+id/name"
+      name="Name"
+      secondaryTxt="Park Hong UK"/>
+  <item
+      android:id="@+id/sex"
+      name="Sex"
+      secondaryTxt="male"/>
+  <item
+      android:id="@+id/city"
+      name="City"
+      secondaryTxt="Seoul"/>
+  <item
+      android:id="@+id/state"
+      name="State"
+      secondaryTxt="SeoDaeMunGu"/>
+  <!--Function Setting-->
+  <header name="File Setting"/>
+  <item
+      android:id="@+id/gift_exchange"
+      hightLight="true"
+      name="File Upload"
+      secondaryTxt="New"/>
+  <item
+      name="Data Repository"/>
+  <!--Share Setting-->
+  <header name="Record Setting"/>
+  <item
+      name="Automatic Recording"
+      android:id="@+id/qq"
+      leftIconRes="auto"
+      showRightIcon="false"
+      showSwitch="on"
+      default="on"
+      />
+  <item
+      name="Recording BitRate"
+      android:id="@+id/we_chat"
+      leftIconRes="bit"
+      showRightIcon="false"
+      showSwitch="on"
+      default="on"
+      />
+  <item
+      name="Recording Foramt"
+      android:id="@+id/sina"
+      leftIconRes="foramt"
+      showRightIcon="false"
+      showSwitch="on"
+      default="off"
+      />
+  <!--Other Setting-->
+  <header name="Other Setting"/>
+  <item
+      android:id="@+id/feedback"
+      name="Feedback"/>
+  <item
+      android:id="@+id/aboutus"
+      name="About Us"/>
+  <item
+      android:id="@+id/update"
+      name="Check Update"/>
+  <item
+      android:id="@+id/logout"
+      name="LogOut"/>
+
+</settings>
