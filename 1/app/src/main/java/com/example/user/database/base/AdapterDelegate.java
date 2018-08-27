@@ -187,10 +187,11 @@ public abstract class AdapterDelegate<T> {
 
   public abstract void convert(T items, ViewHolder holder, int position);
 
-  public static class ViewHolder extends RecyclerView.ViewHolder {
-    private SparseArray<View> mViews;
-    private View mConvertView;
-    private Context mContext;
+  public static class ViewHolder extends RecyclerView.ViewHolder
+  {
+    private static SparseArray<View> mViews;
+    private static View mConvertView;
+    private static Context mContext;
 
     public ViewHolder(Context context, View itemView) {
       super(itemView);
@@ -199,10 +200,8 @@ public abstract class AdapterDelegate<T> {
       mViews = new SparseArray<View>();
     }
 
-    /**
-     * 通过viewId获取控件
-     */
-    public <T extends View> T getView(int viewId) {
+
+    public static <T extends View> T getView(int viewId) {
       View view = mViews.get(viewId);
       if (view == null) {
         view = mConvertView.findViewById(viewId);
@@ -419,5 +418,7 @@ public abstract class AdapterDelegate<T> {
       view.setOnLongClickListener(listener);
       return this;
     }
+
+
   }
 }

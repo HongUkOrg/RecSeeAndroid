@@ -42,6 +42,8 @@ public class SettingRecyclerAdapter extends BaseRecyclerAdapterWithDelegate<Sett
             }
           }
         });
+
+
   }
 
   public SettingItem getSettingItemById(int id)

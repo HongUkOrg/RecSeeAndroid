@@ -35,6 +35,7 @@ import com.example.user.database.Fragment.TwoFragment;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
     private com.example.user.database.DatePicker dateTimeFragment;
     private com.example.user.database.DatePicker dateTimeFragment2;
 
+    private String left_date_time = null;
+    private String right_date_time = null;
+
+
+
 
 
 
@@ -94,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
         final Button date_btn = (Button)findViewById(R.id.date_btn);
 
+        TextView left_date = (TextView)findViewById(R.id.start_time);
+        TextView right_date = (TextView)findViewById(R.id.end_time);
+
+
+
         dateTimeFragment = (com.example.user.database.DatePicker) getSupportFragmentManager().findFragmentByTag(TAG_DATETIME_FRAGMENT);
         if(dateTimeFragment == null) {
             dateTimeFragment = com.example.user.database.DatePicker.newInstance(
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         dateTimeFragment.setTimeZone(TimeZone.getDefault());
 
         // Init format
-        final SimpleDateFormat myDateFormat = new SimpleDateFormat("dd MM YYYY", java.util.Locale.getDefault());
+        final SimpleDateFormat myDateFormat = new SimpleDateFormat("YYYY MM dd", java.util.Locale.getDefault());
         // Assign unmodifiable values
         dateTimeFragment.set24HoursMode(false);
         dateTimeFragment.setHighlightAMPMSelection(false);
@@ -133,11 +144,14 @@ public class MainActivity extends AppCompatActivity {
 
                 start_time.setText(myDateFormat.format(date));
 
+                Log.d(TAG, "leftButtonClick: "+date);
+                DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh:mm:ss");
+
+                //to convert Date to String, use format method of SimpleDateFormat class.
+                left_date_time= dateFormat.format(date);
 
 
-                        dateTimeFragment2.startAtCalendarView();
-                        dateTimeFragment2.setDefaultDateTime(new GregorianCalendar(2018, Calendar.MARCH, 4, 15, 20).getTime());
-                        dateTimeFragment2.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
+
 
 
 
@@ -158,13 +172,26 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        date_btn.setOnClickListener(new View.OnClickListener() {
+        left_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Re-init each time
                 dateTimeFragment.startAtCalendarView();
-                dateTimeFragment.setDefaultDateTime(new GregorianCalendar(2018, Calendar.MARCH, 4, 15, 20).getTime());
+                dateTimeFragment.setDefaultDateTime(new GregorianCalendar().getTime());
                 dateTimeFragment.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
+            }
+        });
+
+
+        right_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Re-init each time
+
+                dateTimeFragment2.startAtCalendarView();
+                dateTimeFragment2.setDefaultDateTime(new GregorianCalendar().getTime());
+                dateTimeFragment2.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
+
             }
         });
 
@@ -213,7 +240,20 @@ public class MainActivity extends AppCompatActivity {
             {
                 TextView end_time = (TextView)findViewById(R.id.end_time);
 
+                Log.d(TAG, "RightButtonClick: "+date);
+
                 end_time.setText(myDateFormat.format(date));
+
+
+                DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh:mm:ss");
+
+                //to convert Date to String, use format method of SimpleDateFormat class.
+                right_date_time= dateFormat.format(date);
+
+                callAdapter.swapCursor(getCallCursor());
+
+
+
 
 
 
@@ -550,10 +590,30 @@ public class MainActivity extends AppCompatActivity {
 
     public Cursor getCallCursor()
     {
-        MemoDbHelper dbHelper = MemoDbHelper.getInstance(this);
-        return dbHelper.getReadableDatabase()
-                .query(Call_Model.Callentry.TABLE_NAME,
-                        null,null,null,null,null,"_id DESC");
+        if(left_date_time!=null&&right_date_time!=null) {
+
+            Log.d(TAG, "getCallCursor: "+"query implemented");
+            MemoDbHelper dbHelper = MemoDbHelper.getInstance(this);
+            return dbHelper.getReadableDatabase()
+//                    .query(Call_Model.Callentry.TABLE_NAME,
+//                            null, Call_Model.Callentry.COLUMN_NAME_START_TIME+">='"+left_date_time+"' AND "+
+//                                    Call_Model.Callentry.COLUMN_NAME_START_TIME+" <= '"+right_date_time+"'",
+//                            null, null, null, "_id DESC");  return dbHelper.getReadableDatabase()
+                    .query(Call_Model.Callentry.TABLE_NAME,
+                            null, Call_Model.Callentry.COLUMN_NAME_START_TIME+" between '"+left_date_time+"' AND '"+
+                                    right_date_time+"'",
+                            null, null, null, "_id DESC");
+        }
+        else
+        {
+            MemoDbHelper dbHelper = MemoDbHelper.getInstance(this);
+            return dbHelper.getReadableDatabase()
+                    .query(Call_Model.Callentry.TABLE_NAME,
+                            null, null, null, null, null, "_id DESC");
+
+
+
+        }
     }
 
     public final static void updateCursor(Context context, Cursor cursor)
@@ -589,6 +649,7 @@ public class MainActivity extends AppCompatActivity {
 
     public Cursor search(String date,String phone_number)
     {
+
 
 
         MemoDbHelper dbHelper = MemoDbHelper.getInstance(this);

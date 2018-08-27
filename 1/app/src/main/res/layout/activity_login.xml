@@ -39,6 +39,7 @@
                 android:layout_marginTop="40dp"
                 android:paddingLeft="50dp"
                 android:spinnerMode="dropdown"
+                android:visibility="invisible"
                 android:drawSelectorOnTop="true"
                 android:popupBackground="@android:color/white"
                 android:background="@drawable/spinner_server"

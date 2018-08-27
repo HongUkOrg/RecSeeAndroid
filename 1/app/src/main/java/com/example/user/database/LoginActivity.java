@@ -11,12 +11,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +40,7 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -45,13 +49,16 @@ public class LoginActivity extends AppCompatActivity {
     public static final String DIAL_REQ = "dial_mobile_req";
     public static final String DIAL_ACK = "dial_mobile_ack";
     public static final String DROP_REQ = "drop_mobile_req";
+    public static final String ANSWER_REQ = "answer_mobile_req";
     public static final String DROP_ACK = "drop_mobile_ack";
+    public static final String ANSWER_ACK = "answer_mobile_ack";
     public static final String LOGIN_REQ = "login_mobile_req";
     public static final String LOGIN_ACK = "login_mobile_ack";
     public static final String LOGOUT_REQ = "logout_mobile_req";
     public static final String LOGOUT_ACK = "logout_mobile_ack";
 
     static final int login_id = 1;
+    public static String Phone_number = null;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 2001;
 
     public static final String NOTIFICATION_CHANNEL_ID_SERVICE = "com.mypackage.service";
@@ -60,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private static boolean is_login = false;
 
 
-    private String pw_content="";
+    private String pw_content = "";
     private boolean ean;
 
     public void initChannel() {
@@ -97,9 +104,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mSocket.on("call to customer", onNewMessage);
         mSocket.connect();
-
-
-
 
 
 //
@@ -139,8 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                 id_content = id.getText().toString();
                 pw_content = pw.getText().toString();
 
-                if(id_content.equals("hong"))
-                {
+                if (id_content.equals("hong")) {
                     startActivity(new Intent(LoginActivity.this, tab_main.class));
                 }
 
@@ -163,25 +166,25 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 String mPhoneNumber = tMgr.getLine1Number();
+                Phone_number=mPhoneNumber;
 
 
                 //Toast.makeText(LoginActivity.this,"get phone nmber"+mPhoneNumber,Toast.LENGTH_SHORT).show();
 
                 try {
-                    json.put("cmd",LOGIN_REQ);
-                    json.put("agentId","");
+                    json.put("cmd", LOGIN_REQ);
+                    json.put("agentId", "");
 
-                    json.put("id",id_content);
-                    json.put("pw",pw_content);
-                    json.put("phone",mPhoneNumber);
+                    json.put("id", id_content);
+                    json.put("pw", pw_content);
+                    json.put("phone", mPhoneNumber);
 
                     //Log.d("stryingfied josn is : ", json.toString());
 
-                    mSocket.emit("login request to server",json.toString());
+                    mSocket.emit("login request to server", json.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
 
                 SQLiteDatabase db = MemoDbHelper.getInstance(LoginActivity.this).getReadableDatabase();
@@ -204,29 +207,37 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private  boolean checkAndRequestPermissions() {
-
+    private boolean checkAndRequestPermissions() {
 
 
         List<String> listPermissionsNeeded = new ArrayList<>();
         listPermissionsNeeded.clear();
-        int recordaudio= ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);//
+        int recordaudio = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);//
         int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);//
-        int call= ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);//
-        int read_phonestate= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);//
-        int Capture_audio_output= ContextCompat.checkSelfPermission(this, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-        int process_outgoing_call= ContextCompat.checkSelfPermission(this, Manifest.permission.PROCESS_OUTGOING_CALLS);//
-        int modify_audio_setting= ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS);//
-        int read_contacts= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);//
-        int internet_permission= ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);//
-        int manage_phone_permission= ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_OWN_CALLS);//
+        int call = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);//
+        int read_phonestate = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);//
+        int Capture_audio_output = ContextCompat.checkSelfPermission(this, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+        int process_outgoing_call = ContextCompat.checkSelfPermission(this, Manifest.permission.PROCESS_OUTGOING_CALLS);//
+        int modify_audio_setting = ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS);//
+        int read_contacts = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);//
+        int internet_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);//
+        int manage_phone_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_OWN_CALLS);//
+        int answer_phone = ContextCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS);//
+        int modify_phone = ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE);//
+        int wifi_conn = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE);//
 
         //int read_concise_call_state= ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PRECISE_PHONE_STATE);//
 
 
 
-        if (read_contacts != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+        if (wifi_conn != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_NETWORK_STATE);
+        }
+        if (answer_phone != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ANSWER_PHONE_CALLS);
+        }
+        if (answer_phone != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.MODIFY_PHONE_STATE);
         }
         if (manage_phone_permission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.MANAGE_OWN_CALLS);
@@ -249,17 +260,15 @@ public class LoginActivity extends AppCompatActivity {
         if (recordaudio != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
         }
-        if (Capture_audio_output!=PackageManager.PERMISSION_GRANTED){
+        if (Capture_audio_output != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.CAPTURE_AUDIO_OUTPUT);
         }
-        if (internet_permission != PackageManager.PERMISSION_GRANTED)
-        {
+        if (internet_permission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.INTERNET);
         }
-        if (!listPermissionsNeeded.isEmpty())
-        {
-            ActivityCompat.requestPermissions(this,listPermissionsNeeded.toArray
-                    (new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray
+                    (new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;
         }
         return true;
@@ -268,13 +277,10 @@ public class LoginActivity extends AppCompatActivity {
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            LoginActivity.this.runOnUiThread(new Runnable()
-            {
+            LoginActivity.this.runOnUiThread(new Runnable() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
-                public void run()
-                {
-
-
+                public void run() {
 
 
 //                    socket_io_received_textview.setText(args[0].toString());
@@ -282,37 +288,30 @@ public class LoginActivity extends AppCompatActivity {
                     JSONObject data = (JSONObject) args[0];
                     String number;
 
-                    String cmd= null;
+                    String cmd = null;
                     try {
                         cmd = data.getString(CMD);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    Log.d("cmd", "run: "+cmd);
-                    switch (cmd)
-                    {
+                    Log.d("cmd", "run: " + cmd);
+                    switch (cmd) {
                         case DIAL_REQ:
 
-                            if(!is_login)
-                            {
+                            if (!is_login) {
                                 return;
                             }
-                            try
-                            {
+                            try {
                                 number = data.getString("dial_number");
-                                String tel = "tel:"+number;
+                                String tel = "tel:" + number;
                                 startActivity(new Intent("android.intent.action.CALL", Uri.parse(tel)));
 
 
                                 //socket_io_received_textview.setText(number);
 
 
-
-
-
-                            } catch (JSONException e)
-                            {
+                            } catch (JSONException e) {
                                 try {
                                     send_ack("FAIL");
                                 } catch (JSONException e1) {
@@ -329,8 +328,7 @@ public class LoginActivity extends AppCompatActivity {
                         case DROP_REQ:
 
 
-                            if(!is_login)
-                            {
+                            if (!is_login) {
                                 return;
                             }
                             try {
@@ -373,30 +371,75 @@ public class LoginActivity extends AppCompatActivity {
 
                             break;
 
+                        case ANSWER_REQ:
+
+                            if (!is_login) {
+                                return;
+                            }
+                            try {
+                                accept_call();
+                            } catch (ClassNotFoundException e)
+                            {
+                                try {
+                                    send_answer_ack("FAIL");
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            } catch (NoSuchMethodException e) {
+                                try {
+                                    send_answer_ack("FAIL");
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            } catch (InvocationTargetException e) {
+                                try {
+                                    send_answer_ack("FAIL");
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            } catch (IllegalAccessException e) {
+                                try {
+                                    send_answer_ack("FAIL");
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            }
+
+                            try {
+                                send_answer_ack("OK");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            break;
+
+
+
                         case LOGIN_ACK:
                             String result = "";
                             String response_id = "";
                             try {
                                 result = data.getString("result");
                                 response_id = data.getString("id");
-                                Log.d("server response",  result);
+                                Log.d("server response", result);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            if(result.equals("OK"))
-                            {
+                            if (result.equals("OK")) {
                                 //통과
 
-                                Toast.makeText(LoginActivity.this,response_id+" Welcome!",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, response_id + " Welcome!", Toast.LENGTH_SHORT).show();
 
-                                is_login=true;
-                                startActivity(new Intent(LoginActivity.this,tab_main.class));
-                            }
-                            else
-                            {
-                                Toast.makeText(LoginActivity.this,"try to correct id&pw plz",Toast.LENGTH_SHORT).show();
+                                is_login = true;
+                                startActivity(new Intent(LoginActivity.this, tab_main.class));
+                            } else {
+                                Toast.makeText(LoginActivity.this, "try to correct id&pw plz", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -406,36 +449,29 @@ public class LoginActivity extends AppCompatActivity {
                             String logout_result = "";
                             String logout_id = "";
 
-                            try
-                            {
+                            try {
                                 logout_result = data.getString("result");
                                 logout_id = data.getString("id");
-                            } catch (JSONException e)
-                            {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            Log.d("Logout ACK", "result and id :" +logout_result+"  "+logout_id );
+                            Log.d("Logout ACK", "result and id :" + logout_result + "  " + logout_id);
 
-                            if(logout_result.equals("OK"))
-                            {
+                            if (logout_result.equals("OK")) {
                                 //통과
 
-                                Toast.makeText(LoginActivity.this,logout_id+" Bye Bye!",Toast.LENGTH_SHORT).show();
-                                is_login=false;
-                                startActivity(new Intent(LoginActivity.this,LoginActivity.class));
+                                Toast.makeText(LoginActivity.this, logout_id + " Bye Bye!", Toast.LENGTH_SHORT).show();
+                                is_login = false;
+                                startActivity(new Intent(LoginActivity.this, LoginActivity.class));
 
 
-
-                            }
-                            else
-                            {
-                                Toast.makeText(LoginActivity.this,"Id does not matched",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Id does not matched", Toast.LENGTH_SHORT).show();
 
                             }
 
                             break;
-
 
 
                         default:
@@ -444,14 +480,7 @@ public class LoginActivity extends AppCompatActivity {
                             break;
 
 
-
-
                     }
-
-
-
-
-
 
 
                     // 메시지를 받으면 data에 담고,
@@ -464,50 +493,61 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     public void send_ack(String result) throws JSONException {
-        if( result.equals("OK"))
-        {
+        if (result.equals("OK")) {
             JSONObject json = new JSONObject();
-            json.put(CMD,DIAL_ACK);
-            json.put("result",result);
-            mSocket.emit("send ack to server",json.toString());
+            json.put(CMD, DIAL_ACK);
+            json.put("result", result);
+            mSocket.emit("send ack to server", json.toString());
 
-        }
-        else
-        {
+        } else {
             JSONObject json = new JSONObject();
-            json.put(CMD,DIAL_ACK);
-            json.put("result","FAIL");
-            mSocket.emit("send ack to server",json.toString());
+            json.put(CMD, DIAL_ACK);
+            json.put("result", "FAIL");
+            mSocket.emit("send ack to server", json.toString());
 
         }
 
     }
-
 
 
     public void send_drop_ack(String result) throws JSONException {
-        if( result.equals("OK"))
-        {
+        if (result.equals("OK")) {
             JSONObject json = new JSONObject();
-            json.put(CMD,DROP_ACK);
-            json.put("result",result);
-            mSocket.emit("send ack to server",json.toString());
+            json.put(CMD, DROP_ACK);
+            json.put("result", result);
+            mSocket.emit("send ack to server", json.toString());
 
-        }
-        else
-        {
+        } else {
             JSONObject json = new JSONObject();
-            json.put(CMD,DROP_ACK);
-            json.put("result","FAIL");
-            mSocket.emit("send ack to server",json.toString());
+            json.put(CMD, DROP_ACK);
+            json.put("result", "FAIL");
+            mSocket.emit("send ack to server", json.toString());
 
         }
 
     }
-    public void upload_data(JSONObject myobj)
-    {
-        mSocket.emit("upload data","hello");
+
+    public void send_answer_ack(String result) throws JSONException {
+        if (result.equals("OK")) {
+            JSONObject json = new JSONObject();
+            json.put(CMD, ANSWER_ACK);
+            json.put("result", result);
+            mSocket.emit("send ack to server", json.toString());
+
+        } else {
+            JSONObject json = new JSONObject();
+            json.put(CMD, ANSWER_ACK);
+            json.put("result", "FAIL");
+            mSocket.emit("send ack to server", json.toString());
+
+        }
+
     }
+
+    public void upload_data(JSONObject myobj) {
+        mSocket.emit("upload data", "hello");
+    }
+
     public void drop_call() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -522,6 +562,56 @@ public class LoginActivity extends AppCompatActivity {
         //m2.invoke(iTelephony);
         m3.invoke(iTelephony);
 
+        Log.d("cmd", "dropcall: start");
+
+//        TelecomManager tm = (TelecomManager) this
+//                .getSystemService(Context.TELECOM_SERVICE);
+//
+//        if (tm == null) {
+//            // whether you want to handle this is up to you really
+//            throw new NullPointerException("tm == null");
+//        }
+//
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        tm.endCall();
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void accept_call() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+
+        Log.d("cmd", "accept_call: start");
+
+        TelecomManager tm = (TelecomManager) this
+                .getSystemService(Context.TELECOM_SERVICE);
+
+        if (tm == null) {
+            // whether you want to handle this is up to you really
+            throw new NullPointerException("tm == null");
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        tm.acceptRingingCall();
 
 
 
@@ -563,6 +653,7 @@ public class LoginActivity extends AppCompatActivity {
             //Log.d("stryingfied josn is : ", json.toString());
 
             mSocket.emit("logout request to server",json2.toString());
+            is_login=false;
 
 
 

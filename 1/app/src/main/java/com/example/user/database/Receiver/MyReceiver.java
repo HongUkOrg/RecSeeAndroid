@@ -202,13 +202,12 @@ public class MyReceiver extends BroadcastReceiver {
         if(state.equals("OUT MISS"))
 
         {
-            Intent i = new Intent(ctx, AlertDialogActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra("start", start);
-            i.putExtra("name", "HongUk");
-            i.putExtra("phone", number);
-            i.putExtra("state",state);
-            context.startActivity(i);
+            MemoDbHelper dbHelper = MemoDbHelper.getInstance(ctx);
+            dbHelper.save_Contact(new Contacts("hongcha", number, start, start, state,"","OK","NO","NO"));
+            //main=main.set_context(ctx);
+            main.updateCursor(ctx, getChangedCursor(ctx));
+            stopRecording();
+
         }
 
         else {
@@ -229,20 +228,19 @@ public class MyReceiver extends BroadcastReceiver {
 
     protected void onMissedCall(Context ctx, String number, Date start,String state)
     {
-        Intent i = new Intent(ctx, AlertDialogActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.putExtra("start", start);
-        i.putExtra("name", "HongUk");
-        i.putExtra("phone", number);
-        i.putExtra("state",state);
-        context.startActivity(i);
-//        Toast.makeText(ctx,"Call_Missed, Reason : quit",Toast.LENGTH_SHORT).show();
+//        Intent i = new Intent(ctx, AlertDialogActivity.class);
+//        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        i.putExtra("start", start);
+//        i.putExtra("name", "HongUk");
+//        i.putExtra("phone", number);
+//        i.putExtra("state",state);
+//        context.startActivity(i);
+        MemoDbHelper dbHelper = MemoDbHelper.getInstance(ctx);
+        dbHelper.save_Contact(new Contacts("hongcha", number, start, start, state,"","OK","NO","NO"));
+        //main=main.set_context(ctx);
+        main.updateCursor(ctx, getChangedCursor(ctx));
+        stopRecording();
 
-//
-//        MemoDbHelper dbHelper = MemoDbHelper.getInstance(ctx);
-//
-//        dbHelper.save_Contact(new Contacts("hongcha", number, start, start, "IN MISS",""));
-//        main.updateCursor(ctx,getChangedCursor(ctx));
 
 
     }

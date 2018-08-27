@@ -4,16 +4,22 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Icon;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.RecyclerView;
 import android.telecom.Call;
 import android.util.Log;
 import android.view.View;
@@ -24,10 +30,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.database.Adapter.Call_Model;
+import com.example.user.database.Adapter.SettingRecyclerAdapter;
 import com.example.user.database.DB_UTIL.MemoDbHelper;
 import com.example.user.database.IconTabsActivity;
 import com.example.user.database.MainActivity;
 import com.example.user.database.R;
+import com.example.user.database.SettingActivity;
+import com.example.user.database.base.AdapterDelegate;
+import com.example.user.database.model.SettingItem;
 import com.example.user.database.tab_main;
 import com.skyfishjy.library.RippleBackground;
 
@@ -43,6 +53,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -86,6 +97,10 @@ public class UploadToServer extends Activity {
             +"/MyRecSee/";
     String uploadFileName = "hongcha.mp3";
     private boolean all_complete;
+    private boolean wifi_only_upload = false;
+
+    private TextView result_post;
+
 
 
     @Override
@@ -93,6 +108,10 @@ public class UploadToServer extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_to_server);
+
+
+
+
 
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -105,9 +124,15 @@ public class UploadToServer extends Activity {
         ImageView imageView=(ImageView)findViewById(R.id.centerImage);
         rippleBackground.startRippleAnimation();
 
+        result_post = (TextView)findViewById(R.id.requestTextView);
+
 
         Intent intent = getIntent();
         all_complete=false;
+
+        uploadButton = (Button)findViewById(R.id.uploadButton);
+
+
         if (intent != null)
         {
             id = intent.getLongExtra("id",-1);
@@ -116,7 +141,7 @@ public class UploadToServer extends Activity {
 
             start_time = intent.getStringExtra("StartTime");
 
-            uploadFileName="All files not uploaded";
+            uploadFileName="All files are not uploaded";
 
 
 
@@ -127,6 +152,8 @@ public class UploadToServer extends Activity {
             {
 
                 Log.d("uploadToServer", "onCreate: passed");
+
+                uploadButton.setText("개별 전송하기");
 
 
                 String child = "record_";
@@ -150,18 +177,50 @@ public class UploadToServer extends Activity {
 
 
 
-        uploadButton = (Button)findViewById(R.id.uploadButton);
+
         messageText  = (TextView)findViewById(R.id.messageText);
 
-        messageText.setText("Waiting for Uploading.. \n: "+"'"+uploadFileName+"'");
+        messageText.setText("업로드 예정 파일 \n==> "+"'"+uploadFileName+"'");
 
         /************* Php script path ****************/
         upLoadServerUri = "http://phwysl.dothome.co.kr/pass.php";
-        uploadButton.setOnClickListener(new OnClickListener() {
+        uploadButton.setOnClickListener(new OnClickListener()
+        {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
 
+                ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                if (mWifi.isConnected()) {
+
+                }
+                else
+                {
+                    if(SettingActivity.wifi_upload_checked==true)
+                    {
+                        Toast.makeText(UploadToServer.this,"WIFI_ONLY 모드입니다.",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+
+
+                if(all_upload!=null)
+                {
+                    if (all_upload.equals("OK"))
+                    {
+                        HttpPostData(-1);
+
+                    }
+                }
+                else
+                {
+
+                    HttpPostData(id);
+                }
 
 
 
@@ -181,6 +240,7 @@ public class UploadToServer extends Activity {
                             if (all_upload.equals("OK"))
                             {
                                 upload_all_file();
+
                             }
                         }
                         else
@@ -191,6 +251,8 @@ public class UploadToServer extends Activity {
 
                     }
                 }).start();
+
+
             }
         });
 
@@ -202,7 +264,7 @@ public class UploadToServer extends Activity {
             public void onClick(View view)
             {
 
-                HttpPostData();
+                HttpPostData(-1);
 
             }
         });
@@ -233,7 +295,7 @@ public class UploadToServer extends Activity {
             all_upload=null;
 
 
-            startActivity(new Intent(UploadToServer.this, tab_main.class));
+            //startActivity(new Intent(UploadToServer.this, tab_main.class));
 
 
 
@@ -369,7 +431,7 @@ public class UploadToServer extends Activity {
 
                                 }
                                 else {
-                                    startActivity(new Intent(UploadToServer.this, tab_main.class));
+                                    //startActivity(new Intent(UploadToServer.this, tab_main.class));
                                 }
 
                         }
@@ -456,7 +518,7 @@ public class UploadToServer extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("WrongConstant")
-    public void HttpPostData() {
+    public void HttpPostData(long id) {
         try {
 
             //--------------------------
@@ -491,13 +553,29 @@ public class UploadToServer extends Activity {
 
 
 
+            JSONObject db_update_json= new JSONObject();
+            String myJson=null;
 
 
+            if(id == -1)
+            {
 
-            JSONObject db_update_json = get_db_json();
+                db_update_json = get_db_json(get_cursor());
 
 
-            String myJson = db_update_json.toString();
+                myJson = db_update_json.toString();
+
+            }
+            else
+            {
+
+                db_update_json = get_db_json(get_cursor_one_object(id));
+
+
+                myJson = db_update_json.toString();
+
+            }
+
 
             Log.d(TAG, "HttpPostData: data is"+myJson);
 
@@ -532,7 +610,7 @@ public class UploadToServer extends Activity {
                     JSONObject obj = db_update_json.getJSONObject(Integer.toString(i+1));
 
                     update_json_post_ok(obj.getString("id"));
-                    startActivity(new Intent(UploadToServer.this,tab_main.class));
+                    //startActivity(new Intent(UploadToServer.this,tab_main.class));
                 }
 
             }
@@ -542,11 +620,13 @@ public class UploadToServer extends Activity {
             while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
                 builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
             }
-            String myResult = builder.toString();                       // 전송결과를 전역 변수에 저장
-            ((TextView)(findViewById(R.id.requestTextView))).setText(myResult);
+            String myResult = builder.toString();
+            // 전송결과를 전역 변수에 저장
+            result_post.setText(myResult);
+//            ((TextView)(findViewById(R.id.requestTextView))).setText(myResult);
 
 
-            Toast.makeText(UploadToServer.this, "전송 후 결과 받음", 0).show();
+//            Toast.makeText(UploadToServer.this, "전송 후 결과 받음", 0).show();
         } catch (MalformedURLException e) {
             //
         } catch (IOException e) {
@@ -574,10 +654,11 @@ public class UploadToServer extends Activity {
 
     }
 
-    public JSONObject get_db_json() throws JSONException {
+    public JSONObject get_db_json(Cursor cursor) throws JSONException
+    {
 
 
-        Cursor c = get_cursor();
+        Cursor c = cursor;
         JSONObject result_json = new JSONObject();
 
 
@@ -623,5 +704,14 @@ public class UploadToServer extends Activity {
     }
 
 
+    public Cursor get_cursor_one_object(long id)
+    {
 
+        MemoDbHelper dbHelper = MemoDbHelper.getInstance(this);
+        return dbHelper.getReadableDatabase()
+                .query(Call_Model.Callentry.TABLE_NAME,
+                        null, Call_Model.Callentry._ID+"='"+Long.toString(id)+"'",null,null,null,null);
+
+
+    }
 }

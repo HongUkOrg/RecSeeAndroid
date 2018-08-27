@@ -35,8 +35,8 @@
   <!--Share Setting-->
   <header name="Record Setting"/>
   <item
-      name="Automatic Recording"
-      android:id="@+id/qq"
+      name="WIFI only upload"
+      android:id="@+id/wifi"
       leftIconRes="auto"
       showRightIcon="false"
       showSwitch="on"

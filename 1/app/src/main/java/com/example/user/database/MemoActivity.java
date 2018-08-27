@@ -13,6 +13,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,9 +46,15 @@ public class MemoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.info_of_call);
 
         File storeDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "MyRecSee");
+
+
+
 
 //        myMediaPlayer = MediaPlayer.create(this,storeDir)''
 
@@ -56,7 +63,8 @@ public class MemoActivity extends AppCompatActivity {
 
         mTitleEditText = (TextView)findViewById(R.id.title_edit);
         mContentsEditText=(TextView)findViewById(R.id.contents_edit);
-        miss_reasonTExt = (TextView)findViewById(R.id.miss_call_reason);
+//        miss_reasonTExt = (TextView)findViewById(R.id.miss_call_reason);
+
 
 
 
@@ -71,9 +79,9 @@ public class MemoActivity extends AppCompatActivity {
 
             saved_num=contents;
 
-            mTitleEditText.setText(title);
+            mTitleEditText.setText(start_time);
             mContentsEditText.setText(contents);
-            miss_reasonTExt.setText(miss_reason);
+//            miss_reasonTExt.setText(miss_reason);
 
         }
 
@@ -98,8 +106,8 @@ public class MemoActivity extends AppCompatActivity {
 
         });
 
-        final Button play_button = (Button) findViewById(R.id.play_recorded_button);
-        Button uplaod_button = (Button) findViewById(R.id.one_upload_button);
+        final TextView play_button = (TextView) findViewById(R.id.play_recorded_button);
+        TextView uplaod_button = (TextView) findViewById(R.id.one_upload_button);
 
 
         uplaod_button.setOnClickListener(new View.OnClickListener()
@@ -336,7 +344,7 @@ public class MemoActivity extends AppCompatActivity {
             else
             {
 
-                Toast.makeText(this,"Call Updated",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this,"Call Updated",Toast.LENGTH_SHORT).show();
             }
 
 
